@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Monthly Report{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2><i class="fa-solid fa-calendar-days"></i> Monthly Report</h2>
+    <form class="d-flex gap-2" method="get" action="/reports/monthly">
+        <input type="month" name="month" class="form-control" value="{{ selected_month }}">
+        <button class="btn btn-brand">Show</button>
+    </form>
+</div>
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="stat-card bg-green"><div class="label">Total Sales</div><h3>Rs. {{ "%.2f"|format(total_sales) }}</h3></div></div>
+    <div class="col-md-4"><div class="stat-card bg-orange"><div class="label">Total Purchases</div><h3>Rs. {{ "%.2f"|format(total_purchases) }}</h3></div></div>
+    <div class="col-md-4"><div class="stat-card bg-blue"><div class="label">Difference</div><h3>Rs. {{ "%.2f"|format(total_sales - total_purchases) }}</h3></div></div>
+</div>
+<div class="row g-3">
+    <div class="col-md-6"><div class="table-card"><h5>Sales ({{ sales|length }})</h5>
+        <table class="table table-sm"><thead><tr><th>Date</th><th>Bill</th><th>Customer</th><th>Amount</th></tr></thead><tbody>
+        {% for s in sales %}<tr><td>{{ s.bill_date }}</td><td><a href="/sales/view/{{ s.id }}">{{ s.bill_no }}</a></td><td>{{ s.customer.name if s.customer else "-" }}</td><td>Rs. {{ "%.2f"|format(s.total_amount) }}</td></tr>
+        {% else %}<tr><td colspan="4" class="text-muted text-center">No sales</td></tr>{% endfor %}
+        </tbody></table></div></div>
+    <div class="col-md-6"><div class="table-card"><h5>Purchases ({{ purchases|length }})</h5>
+        <table class="table table-sm"><thead><tr><th>Date</th><th>Bill</th><th>Supplier</th><th>Amount</th></tr></thead><tbody>
+        {% for p in purchases %}<tr><td>{{ p.bill_date }}</td><td><a href="/purchases/view/{{ p.id }}">{{ p.bill_no }}</a></td><td>{{ p.supplier.name if p.supplier else "-" }}</td><td>Rs. {{ "%.2f"|format(p.total_amount) }}</td></tr>
+        {% else %}<tr><td colspan="4" class="text-muted text-center">No purchases</td></tr>{% endfor %}
+        </tbody></table></div></div>
+</div>
+{% endblock %}

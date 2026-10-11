@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Pharmacy MS{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h2><i class="fa-solid fa-gauge"></i> Dashboard</h2>
+    <span class="text-muted">Today: {{ today.strftime("%d %b, %Y") }}</span>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card bg-blue">
+            <div class="stat-icon"><i class="fa-solid fa-pills"></i></div>
+            <div class="label">Total Medicines</div>
+            <h3>{{ total_medicines }}</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-green">
+            <div class="stat-icon"><i class="fa-solid fa-truck"></i></div>
+            <div class="label">Total Suppliers</div>
+            <h3>{{ total_suppliers }}</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-orange">
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="label">Total Customers</div>
+            <h3>{{ total_customers }}</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-purple">
+            <div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="label">Low Stock Items</div>
+            <h3>{{ low_stock_medicines|length }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="table-card">
+            <h5 class="mb-3"><i class="fa-solid fa-calendar-day text-success"></i> Today's Summary</h5>
+            <p class="mb-1">Sales: <strong class="text-success">Rs. {{ "%.2f"|format(today_sales_total) }}</strong></p>
+            <p class="mb-0">Purchases: <strong class="text-danger">Rs. {{ "%.2f"|format(today_purchase_total) }}</strong></p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="table-card">
+            <h5 class="mb-3"><i class="fa-solid fa-calendar-days text-primary"></i> This Month's Summary</h5>
+            <p class="mb-1">Sales: <strong class="text-success">Rs. {{ "%.2f"|format(month_sales_total) }}</strong></p>
+            <p class="mb-0">Purchases: <strong class="text-danger">Rs. {{ "%.2f"|format(month_purchase_total) }}</strong></p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="table-card">
+            <h5 class="mb-3"><i class="fa-solid fa-triangle-exclamation text-danger"></i> Low Stock Medicines (&le; 10)</h5>
+            {% if low_stock_medicines %}
+            <table class="table table-sm">
+                <thead><tr><th>Name</th><th>Stock</th></tr></thead>
+                <tbody>
+                {% for m in low_stock_medicines %}
+                    <tr><td>{{ m.name }}</td><td><span class="badge badge-low-stock">{{ m.stock_quantity }}</span></td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">No low stock items. All good!</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="table-card">
+            <h5 class="mb-3"><i class="fa-solid fa-receipt text-info"></i> Recent Sales</h5>
+            {% if recent_sales %}
+            <table class="table table-sm">
+                <thead><tr><th>Bill No</th><th>Date</th><th>Amount</th></tr></thead>
+                <tbody>
+                {% for s in recent_sales %}
+                    <tr><td>{{ s.bill_no }}</td><td>{{ s.bill_date }}</td><td>Rs. {{ "%.2f"|format(s.total_amount) }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">No sales yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

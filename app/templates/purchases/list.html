@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Purchase Bills{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2><i class="fa-solid fa-cart-shopping"></i> Purchase Bills</h2>
+    <a href="/purchases/add" class="btn btn-brand"><i class="fa-solid fa-plus"></i> New Purchase</a>
+</div>
+<div class="table-card">
+    <table class="table table-hover">
+        <thead><tr><th>Bill No</th><th>Date</th><th>Supplier</th><th>Total</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for b in bills %}
+            <tr>
+                <td>{{ b.bill_no }}</td>
+                <td>{{ b.bill_date }}</td>
+                <td>{{ b.supplier.name if b.supplier else "-" }}</td>
+                <td>Rs. {{ "%.2f"|format(b.total_amount) }}</td>
+                <td>
+                    <a href="/purchases/view/{{ b.id }}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-eye"></i></a>
+                    <a href="/purchases/delete/{{ b.id }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete bill? Stock will be reversed.')"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="5" class="text-center text-muted">No purchase bills yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

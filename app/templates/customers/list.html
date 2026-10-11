@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Customers - Pharmacy MS{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h2><i class="fa-solid fa-users"></i> Customers</h2>
+    <a href="/customers/add" class="btn btn-brand"><i class="fa-solid fa-plus"></i> Add Customer</a>
+</div>
+
+<div class="table-card">
+    <table class="table table-hover">
+        <thead>
+            <tr><th>Name</th><th>Contact</th><th>Address</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+        {% for c in customers %}
+            <tr>
+                <td>{{ c.name }}</td>
+                <td>{{ c.contact or "-" }}</td>
+                <td>{{ c.address or "-" }}</td>
+                <td>
+                    <a href="/customers/edit/{{ c.id }}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen"></i></a>
+                    <a href="/customers/delete/{{ c.id }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this customer?')"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="4" class="text-center text-muted">No customers found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

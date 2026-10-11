@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Sale Bills{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2><i class="fa-solid fa-receipt"></i> Sale Bills</h2>
+    <a href="/sales/add" class="btn btn-brand"><i class="fa-solid fa-plus"></i> New Sale</a>
+</div>
+<div class="table-card">
+    <table class="table table-hover">
+        <thead><tr><th>Bill No</th><th>Date</th><th>Customer</th><th>Total</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for b in bills %}
+            <tr>
+                <td>{{ b.bill_no }}</td>
+                <td>{{ b.bill_date }}</td>
+                <td>{{ b.customer.name if b.customer else "-" }}</td>
+                <td>Rs. {{ "%.2f"|format(b.total_amount) }}</td>
+                <td>
+                    <a href="/sales/view/{{ b.id }}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-eye"></i></a>
+                    <a href="/sales/delete/{{ b.id }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete bill? Stock will be restored.')"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="5" class="text-center text-muted">No sale bills yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

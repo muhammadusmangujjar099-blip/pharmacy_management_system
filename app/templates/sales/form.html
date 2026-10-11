@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}New Sale Bill{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2><i class="fa-solid fa-receipt"></i> New Sale Bill</h2>
+    <a href="/sales" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+<div class="form-card">
+    <form method="post" action="/sales/add">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Customer</label>
+                <select name="customer_id" class="form-select" required>
+                    <option value="">-- Select Customer --</option>
+                    {% for s in customers %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Bill Date</label>
+                <input type="date" name="bill_date" class="form-control" value="{{ today }}" required>
+            </div>
+        </div>
+
+        <h6 class="mt-2">Items</h6>
+        <div id="items"></div>
+        <button type="button" class="btn btn-sm btn-outline-success mb-3" onclick="addRow()"><i class="fa-solid fa-plus"></i> Add Item</button>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h5>Grand Total: Rs. <span id="grand">0.00</span></h5>
+            <button type="submit" class="btn btn-brand"><i class="fa-solid fa-floppy-disk"></i> Save Bill</button>
+        </div>
+    </form>
+</div>
+
+<template id="row-tpl">
+    <div class="item-row row g-2 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label small">Medicine</label>
+            <select name="medicine_id" class="form-select med" onchange="fillPrice(this)" required>
+                <option value="">-- Select --</option>
+                {% for m in medicines %}<option value="{{ m.id }}" data-price="{{ m.sale_price }}">{{ m.name }} (Stock: {{ m.stock_quantity }})</option>{% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2"><label class="form-label small">Qty</label>
+            <input type="number" name="quantity" class="form-control qty" min="1" value="1" oninput="calc()" required></div>
+        <div class="col-md-2"><label class="form-label small">Unit Price</label>
+            <input type="number" step="0.01" name="unit_price" class="form-control price" value="0" oninput="calc()" required></div>
+        <div class="col-md-2"><label class="form-label small">Total</label>
+            <input type="text" class="form-control line" readonly value="0.00"></div>
+        <div class="col-md-1"><button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.item-row').remove();calc()"><i class="fa-solid fa-xmark"></i></button></div>
+    </div>
+</template>
+
+<script>
+function addRow(){ document.getElementById('items').appendChild(document.getElementById('row-tpl').content.cloneNode(true)); }
+function fillPrice(sel){
+    const row = sel.closest('.item-row');
+    row.querySelector('.price').value = sel.selectedOptions[0].dataset.price || 0;
+    calc();
+}
+function calc(){
+    let g = 0;
+    document.querySelectorAll('.item-row').forEach(r=>{
+        const t = (parseFloat(r.querySelector('.qty').value)||0) * (parseFloat(r.querySelector('.price').value)||0);
+        r.querySelector('.line').value = t.toFixed(2); g += t;
+    });
+    document.getElementById('grand').textContent = g.toFixed(2);
+}
+addRow();
+</script>
+{% endblock %}

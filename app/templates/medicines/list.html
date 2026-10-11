@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Medicines - Pharmacy MS{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h2><i class="fa-solid fa-pills"></i> Medicines</h2>
+    <a href="/medicines/add" class="btn btn-brand"><i class="fa-solid fa-plus"></i> Add Medicine</a>
+</div>
+
+<div class="table-card mb-3">
+    <form class="d-flex gap-2" method="get" action="/medicines">
+        <input type="text" name="q" class="form-control" placeholder="Search medicine by name..." value="{{ q }}">
+        <button class="btn btn-outline-secondary" type="submit"><i class="fa-solid fa-search"></i></button>
+    </form>
+</div>
+
+<div class="table-card">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Purchase Price</th>
+                <th>Sale Price</th>
+                <th>Expiry</th>
+                <th>Supplier</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for m in medicines %}
+            <tr>
+                <td>{{ m.name }}</td>
+                <td>{{ m.category }}</td>
+                <td>
+                    {% if m.stock_quantity <= 10 %}
+                        <span class="badge badge-low-stock">{{ m.stock_quantity }}</span>
+                    {% else %}
+                        {{ m.stock_quantity }}
+                    {% endif %}
+                </td>
+                <td>Rs. {{ "%.2f"|format(m.purchase_price) }}</td>
+                <td>Rs. {{ "%.2f"|format(m.sale_price) }}</td>
+                <td>{{ m.expiry_date if m.expiry_date else "-" }}</td>
+                <td>{{ m.supplier.name if m.supplier else "-" }}</td>
+                <td>
+                    <a href="/medicines/edit/{{ m.id }}" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen"></i></a>
+                    <a href="/medicines/delete/{{ m.id }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this medicine?')"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="8" class="text-center text-muted">No medicines found.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

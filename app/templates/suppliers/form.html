@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if supplier else "Add" }} Supplier{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h2><i class="fa-solid fa-truck"></i> {{ "Edit" if supplier else "Add" }} Supplier</h2>
+    <a href="/suppliers" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="form-card">
+    <form method="post" action="{{ '/suppliers/edit/' ~ supplier.id if supplier else '/suppliers/add' }}">
+        <div class="mb-3">
+            <label class="form-label">Supplier Name</label>
+            <input type="text" name="name" class="form-control" required value="{{ supplier.name if supplier else '' }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Contact Number</label>
+            <input type="text" name="contact" class="form-control" value="{{ supplier.contact if supplier else '' }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Address</label>
+            <textarea name="address" class="form-control" rows="2">{{ supplier.address if supplier else '' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-brand"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+    </form>
+</div>
+
+{% endblock %}
